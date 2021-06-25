@@ -1,22 +1,37 @@
 .container {
-  padding: 1rem 1rem;
+  padding: 1rem 1rem 0;
   margin: 0 auto;
   display: flex;
   height: 100vh;
   min-height: 100vh;
-  justify-content: center;
-}
-
-.main {
-  flex: 1;
-  display: flex;
   flex-direction: column;
 }
 
-.header {
-  margin: 2rem auto;
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.empty {
-  text-align: center;
+.header {
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.filter {
+  margin-right: 20px;
+}
+
+.link {
+  color: #0070f3;
+}
+
+.back {
+  margin-right: auto;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
 }

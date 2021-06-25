@@ -1,35 +1,39 @@
 import { useRef, useState } from 'react'
-import styles from '../styles/home.module.css'
 
-export default function Upload({ children }) {
+export default function Upload({ children, ...rest }) {
   const [loading, setLoading] = useState(false)
   const inputRef = useRef(null)
 
   const onUpload = async (e) => {
     const { target } = e
-    let file = target.files ? target.files[0] : null
+    let files = target.files ? target.files : null
 
-    if (file) {
-      let formData = new FormData()
-      formData.append('file', file, file.name)
-
-      setLoading(true)
+    if (files) {
       try {
+        let formData = new FormData()
+        Array.from(files).forEach((file) =>
+          formData.append('file', file, file.name)
+        )
+
+        setLoading(true)
+
         await fetch('/api/upload', { method: 'POST', body: formData })
       } catch (e) {
         console.error(e)
       }
+      inputRef.current.value = ''
       setLoading(false)
     }
   }
 
   return (
-    <div className={styles.card} onClick={() => inputRef.current.click()}>
+    <div {...rest} onClick={() => inputRef.current.click()}>
       {children(loading)}
       <input
         ref={inputRef}
         type="file"
-        id="input"
+        multiple
+        accept=".csv"
         onChange={onUpload}
         style={{ display: 'none' }}
       ></input>

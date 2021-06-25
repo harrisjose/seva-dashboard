@@ -1,12 +1,21 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { format } from 'date-fns'
-import Upload from '../components/upload'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+
+import Upload from '../components/UploadFile'
 import Loading from '../components/loading'
-import styles from '../styles/home.module.css'
+import styles from '../styles/index.module.css'
 
 export default function Home() {
+  const router = useRouter()
   const today = format(new Date(), 'dd/MM/yyyy', new Date())
+
+  useEffect(() => {
+    router.prefetch(`/dashboard/${today}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -25,7 +34,7 @@ export default function Home() {
             </a>
           </Link>
 
-          <Upload>
+          <Upload className={styles.card}>
             {(loading) => (
               <>
                 <h2>

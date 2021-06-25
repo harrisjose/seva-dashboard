@@ -4,8 +4,8 @@ import { isEmpty } from 'lodash'
 
 import type { OctokitResponse } from '@octokit/types'
 
-const owner = 'kanavuproject'
-const repo = 'milaap-donations'
+const owner = process.env.GITHUB_OWNER || ''
+const repo = process.env.GITHUB_REPO || ''
 
 const getPath = (date: Date): string => {
   return 'data/' + format(date, 'yyyy-MM-dd') + '.json'
@@ -27,7 +27,7 @@ export async function readFile(date: Date) {
     const data = response?.data || {}
 
     if (data.content) {
-      const json = new Buffer(data.content, 'base64').toString('ascii')
+      const json = Buffer.from(data.content, 'base64').toString('ascii')
       return JSON.parse(json)
     } else {
       throw new Error('File content empty')
@@ -65,7 +65,7 @@ export async function saveFile(date: Date, json: Object) {
     path: getPath(date),
     message: `Add donations for ${format(date, 'yyyy-MM-dd')}`,
     content: fileContent,
-    committer: { name: 'API', email: 'harrisconnected@gmail.com' },
+    committer: { name: 'API', email: process.env.GITHUB_EMAIL },
   }
 
   if (!isEmpty(sha)) {
