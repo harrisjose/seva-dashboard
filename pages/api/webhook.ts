@@ -1,5 +1,7 @@
 import Cors from 'micro-cors'
 import { parseZip } from '../../lib/parser'
+import { processData } from '../../lib/data-transforms'
+import { saveFile } from '../../lib/storage'
 
 export const config = {
   api: {
@@ -7,15 +9,17 @@ export const config = {
   },
 }
 
-// not adding types because of type mismacth with micro-cors
+// not adding types for req & response because of type mismacth with micro-cors
 async function handler(req: any, res: any) {
-  const { error, data } = await parseZip(req)
+  try {
+    const { rows, columns } = await parseZip(req)
+    const data = await processData(rows, columns)
 
-  if (error) {
+    await saveFile(data.date, data)
+
+    res.status(200).json({ code: 0 })
+  } catch (error) {
     res.status(501).json({ code: 1, message: error.message })
-  } else {
-    console.log(data)
-    res.status(200).json({ code: 0, data })
   }
 }
 

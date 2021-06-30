@@ -3,12 +3,17 @@ export type Error = {
 }
 
 export type Response = {
-  data?: any | null
-  error?: Error | null
-}
-
-export type Data = {
   message?: string
   code: number
   data?: any
+}
+
+export type ParseResult = {
+  data?: any
+  meta?: any
+}
+
+export type PaymentList = {
+  rows: any
+  columns: any
 }

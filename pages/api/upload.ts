@@ -1,9 +1,9 @@
 import { parseCSV } from '../../lib/parser'
-import { save } from '../../lib/storage'
+import { saveFile } from '../../lib/storage'
 import { processData } from '../../lib/data-transforms'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { Data } from '../../lib/types'
+import type { Response } from '../../lib/types'
 
 export const config = {
   api: {
@@ -13,22 +13,16 @@ export const config = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<Response>
 ) {
-  const { error, data } = await parseCSV(req)
+  try {
+    const { rows, columns } = await parseCSV(req)
+    const data = await processData(rows, columns)
 
-  if (!error) {
-    let {
-      data: transactions,
-      meta: { fields },
-    } = data
+    await saveFile(data.date, data)
 
-    const result = await processData(transactions, fields)
-
-    let { error } = await save(result.date, result)
-
-    res.status(200).json({ code: 0, data: result })
-  } else {
+    res.status(200).json({ code: 0, data: data })
+  } catch (error) {
     res.status(501).json({ code: 1, message: error.message })
   }
 }
