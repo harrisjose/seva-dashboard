@@ -19,6 +19,7 @@ async function handler(req: any, res: any) {
 
     res.status(200).json({ code: 0 })
   } catch (error) {
+    console.error(error)
     res.status(501).json({ code: 1, message: error.message })
   }
 }

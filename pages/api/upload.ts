@@ -23,6 +23,7 @@ export default async function handler(
 
     res.status(200).json({ code: 0, data: data })
   } catch (error) {
+    console.error(error)
     res.status(501).json({ code: 1, message: error.message })
   }
 }
